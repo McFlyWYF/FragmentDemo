@@ -4,16 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.example.criminalintent.CrimeBaseHelper;
-import com.example.criminalintent.CrimeCursorWrapper;
-import com.example.criminalintent.CrimeDbSchema;
+
 import com.example.criminalintent.CrimeDbSchema.CrimeTable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.example.criminalintent.CrimeDbSchema.CrimeTable.*;
 import static com.example.criminalintent.CrimeDbSchema.CrimeTable.Cols.*;
 
 
@@ -73,6 +71,12 @@ public class CrimeLab {
         }
     }
 
+    public File getPhotoFile(Crime crime){
+        File filesDir = mContext.getFilesDir();
+
+        return new File(filesDir, crime.getPhotoFileName());
+    }
+
     public void updateCrime(Crime crime) {
         String uuidString = crime.getmId().toString();
         ContentValues values = getContentValues(crime);
@@ -82,15 +86,7 @@ public class CrimeLab {
     }
 
     private CrimeCursorWrapper queryCrimes(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
-                CrimeTable.NAME,
-                null, // Columns - null selects all columns
-                whereClause,
-                whereArgs,
-                null, // groupBy
-                null, // having
-                null  // orderBy
-        );
+        Cursor cursor = mDatabase.query(CrimeTable.NAME, null, whereClause, whereArgs, null, null, null);
         return new CrimeCursorWrapper(cursor);
     }
 
